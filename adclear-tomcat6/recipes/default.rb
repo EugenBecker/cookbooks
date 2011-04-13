@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-#include_recipe "java"
+include_recipe "adclear-java"
 
 service "tomcat6" do
   action :nothing
