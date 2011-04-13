@@ -1,8 +1,9 @@
 #
-# Cookbook Name:: java
-# Attributes:: default
+# Cookbook Name:: openssl
+# Library:: secure_password
+# Author:: Joshua Timberman <joshua@opscode.com>
 #
-# Copyright 2010, Opscode, Inc.
+# Copyright 2009, Opscode, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,12 +16,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
-default["java"]["install_flavor"] = "openjdk"
+require 'openssl'
 
-case platform
-when "centos","redhat","fedora"
-  set["java"]["java_home"] = "/usr/lib/jvm/java"
-else
-	set["java"]["java_home"] = "/usr/lib/jvm/default-java"
+module Opscode
+  module OpenSSL
+    module Password
+      def secure_password
+        pw = String.new
+        
+        while pw.length < 20
+          pw << ::OpenSSL::Random.random_bytes(1).gsub(/\W/, '')
+        end
+
+        pw
+      end
+    end
+  end
 end
