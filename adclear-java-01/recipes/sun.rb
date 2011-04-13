@@ -1,7 +1,6 @@
 #
-# Author:: Seth Chisamore (<schisamo@opscode.com>)
 # Cookbook Name:: java
-# Attributes:: default
+# Recipe:: sun
 #
 # Copyright 2010, Opscode, Inc.
 #
@@ -16,14 +15,24 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+include_recipe "adclear-apt::default"
 
-default['adclear_java']['install_flavor'] = "sun"
+node.run_state[:java_pkgs] = value_for_platform(
+  ["debian","ubuntu"] => {
+    "default" => ["sun-java6-jre","default-jre-headless"]
+  },
+  "default" => ["sun-java6-jre"]
+)
 
-case platform
-when "centos","redhat","fedora"
-  default['adclear_java']['version'] = "6u25"
-  default['adclear_java']['arch'] = kernel['machine'] =~ /x86_64/ ? "amd64" : "i586"
-  set['adclear_java']['java_home'] = "/usr/lib/jvm/java"
+case node.platform
+when "debian","ubuntu"
+  include_recipe "adclear-apt"
+ 
+  template "/etc/apt/sources.list.d/canonical.com.list" do
+    mode "0644"
+    source "canonical.com.list.erb"
+    notifies :run, resources(:execute => "apt-get update"), :immediately
+  end
 else
-  set['adclear_java']['java_home'] = "/usr/lib/jvm/default-java"
+  Chef::Log.error("Installation of Sun Java packages are only supported on Debian/Ubuntu at this time.")
 end
