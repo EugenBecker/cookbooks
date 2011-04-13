@@ -1,10 +1,15 @@
-require 'openssl'
+require 'digest/sha1'
+require 'digest/md5'
+srand
+seed = "--#{rand(10000)}--#{Time.now}--"
 
-pw = String.new
+#require 'openssl'
 
-while pw.length < 20
-  pw << OpenSSL::Random.random_bytes(1).gsub(/\W/, '')
-end
+# pw = String.new
+
+# while pw.length < 20
+#   pw << OpenSSL::Random.random_bytes(1).gsub(/\W/, '')
+# end
 
 # Where the various parts of tomcat6 are
 case platform
@@ -58,7 +63,7 @@ else
 end
 set_unless[:adclear_tomcat6][:java_opts]        = ""
 set_unless[:adclear_tomcat6][:manager_user]     = "manager"
-set_unless[:adclear_tomcat6][:manager_password] = pw
+set_unless[:adclear_tomcat6][:manager_password] = Digest::MD5.hexdigest(Digest::SHA1.hexdigest(seed)[0,8])
 set_unless[:adclear_tomcat6][:permgen_min_free_in_mb] = 24
 
 
