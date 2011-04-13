@@ -1,4 +1,4 @@
-require 'openssl'
+require 'adclear_openssl'
 
 pw = String.new
 
@@ -18,9 +18,9 @@ when "centos"
   set[:adclear_tomcat6][:temp]            = "/var/tmp/tomcat6"
   set[:adclear_tomcat6][:logs]            = "/var/log/tomcat6"
   set[:adclear_tomcat6][:webapp_base_dir] = "/srv/tomcat6/"
-  set[:adclear_tomcat6][:webapps]         = File.join(adclear-tomcat6[:webapp_base_dir],"webapps")
+  set[:adclear_tomcat6][:webapps]         = File.join(adclear_tomcat6[:webapp_base_dir],"webapps")
   set[:adclear_tomcat6][:user]            = "tomcat"
-  set[:adclear_tomcat6][:manager_dir]     = File.join(adclear-tomcat6[:home],"webapps/manager")
+  set[:adclear_tomcat6][:manager_dir]     = File.join(adclear_tomcat6[:home],"webapps/manager")
   set[:adclear_tomcat6][:port]            = 8080
   set[:adclear_tomcat6][:ssl_port]        = 8433
 else
@@ -33,7 +33,7 @@ else
   set[:adclear_tomcat6][:temp]            = "/var/tmp/tomcat6"
   set[:adclear_tomcat6][:logs]            = "/var/log/tomcat6"
   set[:adclear_tomcat6][:webapp_base_dir] = "/srv/tomcat6/"
-  set[:adclear_tomcat6][:webapps]         = File.join(adclear-tomcat6[:webapp_base_dir],"webapps")
+  set[:adclear_tomcat6][:webapps]         = File.join(adclear_tomcat6[:webapp_base_dir],"webapps")
   set[:adclear_tomcat6][:user]            = "tomcat"
   set[:adclear_tomcat6][:manager_dir]     = "/usr/share/tomcat6/webapps/manager"
   set[:adclear_tomcat6][:port]            = 8080
