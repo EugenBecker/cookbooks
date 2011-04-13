@@ -48,16 +48,16 @@
 #                    functionality are the goals for the project.
 ### END INIT INFO
 
-PATH=<%= @node[:adclear-mongodb][:dir] %>/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-DAEMON=<%= @node[:adclear-mongodb][:dir] %>/bin/mongod
+PATH=<%= @node[:adclear_mongodb][:dir] %>/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+DAEMON=<%= @node[:adclear_mongodb][:dir] %>/bin/mongod
 DESC=database
 
 # Default defaults.  Can be overridden by the /etc/default/$NAME
 NAME=mongodb
-CONF=<%= @node[:adclear-mongodb][:config] %>
-REST=<%= @node[:adclear-mongodb][:rest] %>
-PIDFILE=<%= @node[:adclear-mongodb][:pidfile] %>
-SYNCDELAY="--syncdelay <%= @node[:adclear-mongodb][:syncdelay] %>"
+CONF=<%= @node[:adclear_mongodb][:config] %>
+REST=<%= @node[:adclear_mongodb][:rest] %>
+PIDFILE=<%= @node[:adclear_mongodb][:pidfile] %>
+SYNCDELAY="--syncdelay <%= @node[:adclear_mongodb][:syncdelay] %>"
 
 # Include mongodb defaults if available
 if [ -f /etc/default/$NAME ] ; then

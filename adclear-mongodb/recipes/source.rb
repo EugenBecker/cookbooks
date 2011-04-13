@@ -29,13 +29,13 @@ user "mongodb" do
   shell "/bin/false"
 end
 
-remote_file "/tmp/mongodb-#{node[:adclear-mongodb][:version]}.tar.gz" do
-  source node[:adclear-mongodb][:source]
-  checksum node[:adclear-mongodb][platform][:checksum]
+remote_file "/tmp/mongodb-#{node[:adclear_mongodb][:version]}.tar.gz" do
+  source node[:adclear_mongodb][:source]
+  checksum node[:adclear_mongodb][platform][:checksum]
   action :create_if_missing
 end
 
-[node[:adclear-mongodb][:dir], "#{node[:adclear-mongodb][:dir]}/bin", node[:adclear-mongodb][:datadir]].each do |dir|
+[node[:adclear_mongodb][:dir], "#{node[:adclear-mongodb][:dir]}/bin", node[:adclear_mongodb][:datadir]].each do |dir|
   directory dir do
     owner "mongodb"
     group "mongodb"
@@ -44,20 +44,20 @@ end
   end
 end
 
-bash "Setting up MongoDB #{node[:adclear-mongodb][:version]}" do
+bash "Setting up MongoDB #{node[:adclear_mongodb][:version]}" do
   cwd "/tmp"
   code <<-EOH
-    tar -zxf mongodb-#{node[:adclear-mongodb][:version]}.tar.gz --strip-components=2 -C #{node[:adclear-mongodb][:dir]}/bin
+    tar -zxf mongodb-#{node[:adclear_mongodb][:version]}.tar.gz --strip-components=2 -C #{node[:adclear_mongodb][:dir]}/bin
   EOH
-  not_if { `ps -A -o command | grep "[m]ongo"`.include? node[:adclear-mongodb][:version] }
+  not_if { `ps -A -o command | grep "[m]ongo"`.include? node[:adclear_mongodb][:version] }
 end
 
 environment = File.read('/etc/environment')
-unless environment.include? node[:adclear-mongodb][:dir]
-  File.open('/etc/environment', 'w') { |f| f.puts environment.gsub(/PATH="/, "PATH=\"#{node[:adclear-mongodb][:dir]}/bin:") }
+unless environment.include? node[:adclear_mongodb][:dir]
+  File.open('/etc/environment', 'w') { |f| f.puts environment.gsub(/PATH="/, "PATH=\"#{node[:adclear_mongodb][:dir]}/bin:") }
 end
 
-file node[:adclear-mongodb][:logfile] do
+file node[:adclear_mongodb][:logfile] do
   owner "mongodb"
   group "mongodb"
   mode 0644
@@ -65,7 +65,7 @@ file node[:adclear-mongodb][:logfile] do
   backup false
 end
 
-template node[:adclear-mongodb][:config] do
+template node[:adclear_mongodb][:config] do
   source "mongodb.conf.erb"
   owner "mongodb"
   group "mongodb"
@@ -82,7 +82,7 @@ end
 service "mongodb" do
   supports :start => true, :stop => true, "force-stop" => true, :restart => true, "force-reload" => true, :status => true
   action [:enable, :start]
-  subscribes :restart, resources(:template => node[:adclear-mongodb][:config])
+  subscribes :restart, resources(:template => node[:adclear_mongodb][:config])
   subscribes :restart, resources(:template => "/etc/init.d/mongodb")
 end
 
