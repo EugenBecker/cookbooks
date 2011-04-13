@@ -19,7 +19,7 @@
 
 pkgs = value_for_platform(
   ["centos","redhat","fedora"] => {
-    "default" => ["jdk-#{node['java']['version']}-ea-linux-#{node['java']['arch']}.rpm"]
+    "default" => ["jdk-#{node['adclear_java']['version']}-ea-linux-#{node['adclear_java']['arch']}.rpm"]
   },
   ["debian","ubuntu"] => {
     "default" => ["sun-java6-jdk"]
@@ -36,7 +36,7 @@ when "ubuntu"
     action :add
   end
   # update-java-alternatives doesn't work with only sun java installed
-  node.set['java']['java_home'] = "/usr/lib/jvm/java-6-sun"
+  node.set['adclear_java']['java_home'] = "/usr/lib/jvm/java-6-sun"
 
 when "debian"
 
@@ -47,15 +47,15 @@ when "debian"
     action :add
   end
   # update-java-alternatives doesn't work with only sun java installed
-  node.set['java']['java_home'] = "/usr/lib/jvm/java-6-sun"
+  node.set['adclear_java']['java_home'] = "/usr/lib/jvm/java-6-sun"
 
 when "centos", "redhat", "fedora"
 
   pkgs.each do |pkg|
-    if node['java'].attribute?('rpm_url')
+    if node['adclear_java'].attribute?('rpm_url')
       remote_file "#{Chef::Config[:file_cache_path]}/#{pkg}" do
-        source "#{node['java']['rpm_url']}/#{pkg}"
-        checksum node['java']['rpm_checksum']
+        source "#{node['adclear_java']['rpm_url']}/#{pkg}"
+        checksum node['adclear_java']['rpm_checksum']
         mode "0644"
       end
     else

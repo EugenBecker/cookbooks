@@ -24,76 +24,76 @@ service "tomcat6" do
   supports :status => true, :start => true, :stop => true, :restart => true
 end
 
-group node[:adclear-tomcat6][:user] do
+group node[:adclear_tomcat6][:user] do
 end
 
-user node[:adclear-tomcat6][:user] do
+user node[:adclear_tomcat6][:user] do
   comment "Apache Tomcat"
-  gid node[:adclear-tomcat6][:user]
-  home node[:adclear-tomcat6][:home]
+  gid node[:adclear_tomcat6][:user]
+  home node[:adclear_tomcat6][:home]
   shell "/bin/sh"
 end
 
-[node[:adclear-tomcat6][:temp],node[:adclear-tomcat6][:logs],node[:adclear-tomcat6][:webapp_base_dir],node[:adclear-tomcat6][:webapps],node[:adclear-tomcat6][:home],node[:adclear-tomcat6][:conf]].each do |dir|
+[node[:adclear_tomcat6][:temp],node[:adclear-tomcat6][:logs],node[:adclear-tomcat6][:webapp_base_dir],node[:adclear-tomcat6][:webapps],node[:adclear-tomcat6][:home],node[:adclear-tomcat6][:conf]].each do |dir|
   directory dir do
     action :create
     recursive true
     mode 0755
-    owner "#{node[:adclear-tomcat6][:user]}"
-    group "#{node[:adclear-tomcat6][:user]}"
+    owner "#{node[:adclear_tomcat6][:user]}"
+    group "#{node[:adclear_tomcat6][:user]}"
   end
 end
 
 [:temp,:logs,:webapps,:conf].each do |dir|
-  link ::File.join(node[:adclear-tomcat6][:home],dir.to_s) do
-    to node[:adclear-tomcat6][dir] # use values from attributes
+  link ::File.join(node[:adclear_tomcat6][:home],dir.to_s) do
+    to node[:adclear_tomcat6][dir] # use values from attributes
   end
 end
 
 usr_share_dir =  "/usr/share"
 
 bash "update_manager" do
-  user node[:adclear-tomcat6][:user]
+  user node[:adclear_tomcat6][:user]
   action :nothing
-  cwd node[:adclear-tomcat6][:webapps]
+  cwd node[:adclear_tomcat6][:webapps]
   code <<-EOH
   rm -rf ./manager
-  cp -r #{usr_share_dir}/apache-tomcat-#{node[:adclear-tomcat6][:version]}/webapps/manager .
+  cp -r #{usr_share_dir}/apache-tomcat-#{node[:adclear_tomcat6][:version]}/webapps/manager .
   EOH
 end
 
 bash "install_tomcat6" do
-  tomcat_version_name = "apache-tomcat-#{node[:adclear-tomcat6][:version]}"
+  tomcat_version_name = "apache-tomcat-#{node[:adclear_tomcat6][:version]}"
   tomcat_version_name_tgz = "#{tomcat_version_name}.tar.gz"
   user "root"
   cwd usr_share_dir
   not_if do ::File.exists?(::File.join(usr_share_dir,tomcat_version_name)) end
   code <<-EOH
-  wget http://archive.apache.org/dist/tomcat/tomcat-6/v#{node[:adclear-tomcat6][:version]}/bin/#{tomcat_version_name_tgz}
+  wget http://archive.apache.org/dist/tomcat/tomcat-6/v#{node[:adclear_tomcat6][:version]}/bin/#{tomcat_version_name_tgz}
   tar -zxf #{tomcat_version_name_tgz}
   rm #{tomcat_version_name_tgz}
-  chown -R #{node[:adclear-tomcat6][:user]}:#{node[:adclear-tomcat6][:user]} #{tomcat_version_name}
+  chown -R #{node[:adclear_tomcat6][:user]}:#{node[:adclear-tomcat6][:user]} #{tomcat_version_name}
   EOH
 end
 
 # just to have it here, may be overriden through own configuration
 bash "install_tomcat6_etc" do
-  user node[:adclear-tomcat6][:user]
-  not_if do ::File.exists?(::File.join(node[:adclear-tomcat6][:conf],"tomcat6.conf")) end
-  cwd node[:adclear-tomcat6][:conf]
+  user node[:adclear_tomcat6][:user]
+  not_if do ::File.exists?(::File.join(node[:adclear_tomcat6][:conf],"tomcat6.conf")) end
+  cwd node[:adclear_tomcat6][:conf]
   code <<-EOH
-  cp -r #{usr_share_dir}/apache-tomcat-#{node[:adclear-tomcat6][:version]}/conf/* .
+  cp -r #{usr_share_dir}/apache-tomcat-#{node[:adclear_tomcat6][:version]}/conf/* .
   EOH
 end
 
-link ::File.join(node[:adclear-tomcat6][:home],"lib") do
-  to ::File.join(usr_share_dir,"apache-tomcat-#{node[:adclear-tomcat6][:version]}","lib")
+link ::File.join(node[:adclear_tomcat6][:home],"lib") do
+  to ::File.join(usr_share_dir,"apache-tomcat-#{node[:adclear_tomcat6][:version]}","lib")
   notifies :run, resources(:bash => "update_manager"), :immediately
   notifies :restart, resources(:service => "tomcat6"), :delayed
 end
 
-link ::File.join(node[:adclear-tomcat6][:home],"bin") do
-  to ::File.join(usr_share_dir,"apache-tomcat-#{node[:adclear-tomcat6][:version]}","bin")
+link ::File.join(node[:adclear_tomcat6][:home],"bin") do
+  to ::File.join(usr_share_dir,"apache-tomcat-#{node[:adclear_tomcat6][:version]}","bin")
   notifies :restart, resources(:service => "tomcat6"), :delayed
 end
 
@@ -146,7 +146,7 @@ when "centos"
 
   package "tomcat-native" do
     action :install
-    only_if do node[:adclear-tomcat6][:with_native] end
+    only_if do node[:adclear_tomcat6][:with_native] end
   end
 
 
@@ -168,7 +168,7 @@ cookbook_file "/usr/bin/dtomcat6" do
   group "root"
 end
 
-cookbook_file ::File.join(node[:adclear-tomcat6][:dir],"logging.properties") do
+cookbook_file ::File.join(node[:adclear_tomcat6][:dir],"logging.properties") do
   source "logging.properties"
   mode 0644
   owner "root"
@@ -186,18 +186,18 @@ service "tomcat6" do
   action :enable
 end
 
-template "#{node[:adclear-tomcat6][:dir]}/tomcat6.conf" do
+template "#{node[:adclear_tomcat6][:dir]}/tomcat6.conf" do
   source "tomcat6.conf.erb"
-  group "#{node[:adclear-tomcat6][:user]}"
-  owner "#{node[:adclear-tomcat6][:user]}"
+  group "#{node[:adclear_tomcat6][:user]}"
+  owner "#{node[:adclear_tomcat6][:user]}"
   mode 0644
   notifies :restart, resources(:service => "tomcat6"), :immediately
 end
 
-template "#{node[:adclear-tomcat6][:dir]}/tomcat-users.xml" do
+template "#{node[:adclear_tomcat6][:dir]}/tomcat-users.xml" do
   source "tomcat-users.xml.erb"
-  group "#{node[:adclear-tomcat6][:user]}"
-  owner "#{node[:adclear-tomcat6][:user]}"
+  group "#{node[:adclear_tomcat6][:user]}"
+  owner "#{node[:adclear_tomcat6][:user]}"
   mode 0600
   notifies :restart, resources(:service => "tomcat6"), :immediately
 end

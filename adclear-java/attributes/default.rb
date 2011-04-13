@@ -17,13 +17,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-default['java']['install_flavor'] = "sun"
+default['adclear_java']['install_flavor'] = "sun"
 
 case platform
 when "centos","redhat","fedora"
-  default['java']['version'] = "6u25"
-  default['java']['arch'] = kernel['machine'] =~ /x86_64/ ? "amd64" : "i586"
-  set['java']['java_home'] = "/usr/lib/jvm/java"
+  default['adclear_java']['version'] = "6u25"
+  default['adclear_java']['arch'] = kernel['machine'] =~ /x86_64/ ? "amd64" : "i586"
+  set['adclear_java']['java_home'] = "/usr/lib/jvm/java"
 else
-  set['java']['java_home'] = "/usr/lib/jvm/default-java"
+  set['adclear_java']['java_home'] = "/usr/lib/jvm/default-java"
 end
