@@ -1,4 +1,4 @@
-require 'adclear_openssl'
+require 'adclear-openssl'
 
 pw = String.new
 
