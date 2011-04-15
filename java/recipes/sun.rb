@@ -19,10 +19,10 @@
 
 pkgs = value_for_platform(
   ["centos","redhat","fedora"] => {
-    "default" => ["jdk-#{node['java']['version']}-ea-linux-#{node['java']['arch']}.rpm"]
+    "default" => ["jre-#{node['java']['version']}-ea-linux-#{node['java']['arch']}.rpm"]
   },
   ["debian","ubuntu"] => {
-    "default" => ["sun-java6-jdk"]
+    "default" => ["sun-java6-jre"]
   }
 )
 
