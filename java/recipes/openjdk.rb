@@ -1,9 +1,8 @@
 #
-# Author:: Seth Chisamore (<schisamo@opscode.com>)
 # Cookbook Name:: java
 # Recipe:: openjdk
 #
-# Copyright 2010-2011, Opscode, Inc.
+# Copyright 2010, Opscode, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,23 +16,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-pkgs = value_for_platform(
+node.run_state[:java_pkgs] = value_for_platform(
+  ["debian","ubuntu"] => {
+    "default" => ["openjdk-6-jre","default-jre","icedtea6-plugin"] # icedtea6-plugin included to make update-java-alternatives work correctly
+  },
   ["centos","redhat","fedora"] => {
     "default" => ["java-1.6.0-openjdk","java-1.6.0-openjdk-devel"]
   },
-  "default" => ["openjdk-6-jdk","default-jdk"]
+  "default" => ["openjdk-6-jre-headless","default-jre-headless","default-jre"]
 )
 
-execute "update-java-alternatives" do
-  command "update-java-alternatives -s java-6-openjdk"
-  returns [0,2]
-  action :nothing
-  only_if { platform?("ubuntu", "debian") }
-end
 
-pkgs.each do |pkg|
-  package pkg do
-    action :install
-    notifies :run, "execute[update-java-alternatives]"
-  end
-end
