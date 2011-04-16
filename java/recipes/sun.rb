@@ -88,6 +88,7 @@ pkgs.each do |pkg|
       options "--nogpgcheck" # sun/oracle doesn't sign their RPMs o_O
     end
     action :install
-    notifies :run, "execute[update-java-alternatives]"
+    notifies :run, resources(:execute => "update-java-alternatives"), :immediately 
+    #notifies :run, "execute[update-java-alternatives]"
   end
 end
