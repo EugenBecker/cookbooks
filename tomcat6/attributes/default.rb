@@ -1,10 +1,11 @@
-require 'openssl'
+#require 'openssl'
 
-pw = String.new
+#pw = String.new
+pw = "pass123"
 
-while pw.length < 20
-  pw << OpenSSL::Random.random_bytes(1).gsub(/\W/, '')
-end
+#while pw.length < 20
+#  pw << OpenSSL::Random.random_bytes(1).gsub(/\W/, '')
+#end
 
 # Where the various parts of tomcat6 are
 case platform
