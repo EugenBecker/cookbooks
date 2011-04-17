@@ -44,19 +44,23 @@ end
 set_unless[:tomcat6][:version]          = "6.0.18"
 set_unless[:tomcat6][:with_native]      = false
 
-#if languages[:java]
-#  set_unless[:tomcat6][:with_snmp]      = !languages[:java][:runtime][:name].match(/^OpenJDK/)
-#else
-#  set_unless[:tomcat6][:with_snmp]      = false
-#end
+if languages[:java]
+  if languages[:java][:runtime]
+    set_unless[:tomcat6][:with_snmp]        = !languages[:java][:runtime][:name].match(/^OpenJDK/)
+  elsif languages[:java][:hotspot]
+    set_unless[:tomcat6][:with_snmp]        = !languages[:java][:hotspot][:name].match(/^OpenJDK/)
+  end
+else
+  set_unless[:tomcat6][:with_snmp]      = false
+end
 
 set_unless[:tomcat6][:java_home]        = "/usr/lib/jvm/java"
 # snmp_opts fail with OpenJDK - results in silent exit(1) from the jre
-#if tomcat6[:with_snmp]
-#  set_unless[:tomcat6][:snmp_opts]      = "-Dcom.sun.management.snmp.interface=0.0.0.0 -Dcom.sun.management.snmp.acl=false -Dcom.sun.management.snmp.port=1161"
-#else
-#  set_unless[:tomcat6][:snmp_opts]      = ""
-#end
+if tomcat6[:with_snmp]
+  set_unless[:tomcat6][:snmp_opts]      = "-Dcom.sun.management.snmp.interface=0.0.0.0 -Dcom.sun.management.snmp.acl=false -Dcom.sun.management.snmp.port=1161"
+else
+  set_unless[:tomcat6][:snmp_opts]      = ""
+end
 set_unless[:tomcat6][:java_opts]        = ""
 set_unless[:tomcat6][:manager_user]     = "manager"
 set_unless[:tomcat6][:manager_password] = pw
