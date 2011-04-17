@@ -1,11 +1,11 @@
 #require 'openssl'
 
-#pw = String.new
-pw = "pass123"
+pw = String.new
+#pw = "pass123"
 
-#while pw.length < 20
-#  pw << OpenSSL::Random.random_bytes(1).gsub(/\W/, '')
-#end
+while pw.length < 20
+  pw << OpenSSL::Random.random_bytes(1).gsub(/\W/, '')
+end
 
 # Where the various parts of tomcat6 are
 case platform
@@ -44,19 +44,19 @@ end
 set_unless[:tomcat6][:version]          = "6.0.18"
 set_unless[:tomcat6][:with_native]      = false
 
-if languages[:java]
-  set_unless[:tomcat6][:with_snmp]      = !languages[:java][:runtime][:name].match(/^OpenJDK/)
-else
-  set_unless[:tomcat6][:with_snmp]      = false
-end
+#if languages[:java]
+#  set_unless[:tomcat6][:with_snmp]      = !languages[:java][:runtime][:name].match(/^OpenJDK/)
+#else
+#  set_unless[:tomcat6][:with_snmp]      = false
+#end
 
 set_unless[:tomcat6][:java_home]        = "/usr/lib/jvm/java"
 # snmp_opts fail with OpenJDK - results in silent exit(1) from the jre
-if tomcat6[:with_snmp]
-  set_unless[:tomcat6][:snmp_opts]      = "-Dcom.sun.management.snmp.interface=0.0.0.0 -Dcom.sun.management.snmp.acl=false -Dcom.sun.management.snmp.port=1161"
-else
-  set_unless[:tomcat6][:snmp_opts]      = ""
-end
+#if tomcat6[:with_snmp]
+#  set_unless[:tomcat6][:snmp_opts]      = "-Dcom.sun.management.snmp.interface=0.0.0.0 -Dcom.sun.management.snmp.acl=false -Dcom.sun.management.snmp.port=1161"
+#else
+#  set_unless[:tomcat6][:snmp_opts]      = ""
+#end
 set_unless[:tomcat6][:java_opts]        = ""
 set_unless[:tomcat6][:manager_user]     = "manager"
 set_unless[:tomcat6][:manager_password] = pw
