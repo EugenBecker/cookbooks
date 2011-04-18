@@ -21,7 +21,7 @@
 include_recipe "java::#{node['java']['install_flavor']}"
 
 execute "setting global environment" do
-  command "grep -q JAVA_HOME ~/.bashrc || echo '\nexport JAVA_HOME=\"/usr/lib/jvm/default-java\"' >> ~/.bashrc"
+  command "grep -q JAVA_HOME /root/.bashrc || echo '\nexport JAVA_HOME=\"/usr/lib/jvm/default-java\"' >> /root/.bashrc"
   returns 0
   action :run
 end
