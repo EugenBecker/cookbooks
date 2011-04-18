@@ -17,11 +17,25 @@
 # limitations under the License.
 #
 
-#include_recipe "java"
+include_recipe "java"
+
+cookbook_file "/etc/init.d/tomcat6" do
+  source "tomcat6"
+  mode 0755
+  owner "root"
+  group "root"
+end
+
+cookbook_file "/usr/bin/dtomcat6" do
+  source "dtomcat6"
+  mode 0755
+  owner "root"
+  group "root"
+end
 
 service "tomcat6" do
   action :nothing
-  supports :status => true, :start => true, :stop => true, :restart => true
+  supports :status => false, :start => true, :stop => true, :restart => true
 end
 
 group node[:tomcat6][:user] do
@@ -152,38 +166,6 @@ when "centos"
 
 else
 
-end
-
-cookbook_file "/etc/init.d/tomcat6" do
-  source "tomcat6"
-  mode 0755
-  owner "root"
-  group "root"
-end
-
-cookbook_file "/usr/bin/dtomcat6" do
-  source "dtomcat6"
-  mode 0755
-  owner "root"
-  group "root"
-end
-
-cookbook_file ::File.join(node[:tomcat6][:dir],"logging.properties") do
-  source "logging.properties"
-  mode 0644
-  owner "root"
-  group "root"
-end
-
-service "tomcat6" do
-  case node[:platform]
-  when "centos"
-    service_name "tomcat6"
-  else
-    #name "tomcat"
-  end
-  supports :start=> true, :stop => true, :restart => true, :status => false
-  action :nothing
 end
 
 template "#{node[:tomcat6][:dir]}/tomcat6.conf" do
