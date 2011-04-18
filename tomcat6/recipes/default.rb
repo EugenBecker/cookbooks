@@ -180,10 +180,10 @@ service "tomcat6" do
   when "centos"
     service_name "tomcat6"
   else
-    name "tomcat"
+    #name "tomcat"
   end
-  supports :start=> true, :stop => true, :restart => true, :status => true
-  action :enable
+  supports :start=> true, :stop => true, :restart => true, :status => false
+  action :nothing
 end
 
 template "#{node[:tomcat6][:dir]}/tomcat6.conf" do
