@@ -19,3 +19,10 @@
 #
 
 include_recipe "java::#{node['java']['install_flavor']}"
+
+execute "echo setting env" do
+  environment({
+     "JAVA_HOME" => "/usr/lib/jvm/default-java",
+  })
+end
+
