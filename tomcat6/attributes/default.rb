@@ -40,7 +40,7 @@ else
   set[:tomcat6][:ssl_port]        = 8433
 end
 
-set_unless[:tomcat6][:version]          = "6.0.23"
+set_unless[:tomcat6][:version]          = "6.0.32"
 set_unless[:tomcat6][:with_native]      = false
 
 if languages[:java]
