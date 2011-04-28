@@ -31,7 +31,7 @@ defaults
   <% end -%>
         
 # Set up application listeners here.
-<% if node[:haproxy][:rails_backends].blank? && node[:haproxy][:php_backends].blank? && node[:haproxy][:static_backends].blank? -%>
+<% if node[:scalarium][:roles][:webtr][:instances].blank? -%>
 listen application 0.0.0.0:80
   # configure a fake backend as long as there are no real ones
   # this way HAProxy will not fail on a config check
@@ -58,79 +58,10 @@ backend webtr_server_ssl
  option redispatch
  option ssl-hello-chk
  <% node[:scalarium][:roles][:webtr][:instances].each do |hostname, server| -%>
- server <%= hostname %> <%= server[:private_ip] %>:4430 weight <%=server['backends'] || 10 %> maxconn <%= server['backends'] || 10 %> check inter <%= node[:haproxy][:check_interval] %>
+ server <%= hostname %> <%= server[:private_ip] %>:443 weight <%=server['backends'] || 10 %> maxconn <%= server['backends'] || 10 %> check inter <%= node[:haproxy][:check_interval] %>
  <% end -%>
 <% end -%>
 
-<% if !node[:haproxy][:rails_backends].empty? -%>
-backend rails_app_servers
-  balance roundrobin
-  option redispatch
-  option httpclose
-  option forwardfor
-  option httpchk <%= node[:haproxy][:health_check_method] %> <%= node[:haproxy][:health_check_url] %>
-  <% node[:haproxy][:rails_backends].each do |backend| -%>
-  server <%= backend['name'] %> <%= backend['ip'] %>:80 weight <%= backend['backends'] || 10 %> maxconn <%= backend['backends'] * 1 %> check inter <%= node[:haproxy][:check_interval] %>
-  <% end -%>
-<% end -%>
-
-<% if !node[:haproxy][:rails_backends].empty? -%>
-backend rails_app_servers_ssl
-  mode tcp
-  balance roundrobin
-  option redispatch
-  option ssl-hello-chk
-  <% node[:haproxy][:rails_backends].each do |backend| -%>
-  server <%= backend['name'] %> <%= backend['ip'] %>:443 weight <%= backend['backends'] || 10 %> maxconn <%= backend['backends'] * 1 %> check inter <%= node[:haproxy][:check_interval] %>
-  <% end -%>
-<% end -%>
-  
-<% if !node[:haproxy][:php_backends].empty? -%>  
-backend php_app_servers
-  balance roundrobin
-  option redispatch
-  option httpclose
-  option forwardfor
-  option httpchk <%= node[:haproxy][:health_check_method] %> <%= node[:haproxy][:health_check_url] %>
-  <% node[:haproxy][:php_backends].each do |backend| -%>
-  server <%= backend['name'] %> <%= backend['ip'] %>:80 weight <%= backend['backends'] || 10 %> maxconn <%= backend['backends'] * 2 %> check inter <%= node[:haproxy][:check_interval] %>
-  <% end -%>  
-<% end -%>
-
-<% if !node[:haproxy][:php_backends].empty? -%>  
-backend php_app_servers_ssl
-  mode tcp
-  balance roundrobin
-  option redispatch
-  option ssl-hello-chk
-  <% node[:haproxy][:php_backends].each do |backend| -%>
-  server <%= backend['name'] %> <%= backend['ip'] %>:443 weight <%= backend['backends'] || 10 %> maxconn <%= backend['backends'] * 2 %> check inter <%= node[:haproxy][:check_interval] %>
-  <% end -%>  
-<% end -%>
-  
-<% if !node[:haproxy][:static_backends].empty? -%>  
-backend static_servers
-  balance roundrobin
-  option redispatch
-  option httpclose
-  option forwardfor
-  option httpchk GET <%= node[:haproxy][:health_check_url] %> # Nginx doesn't understand OPTIONS
-  <% node[:haproxy][:static_backends].each do |backend| -%>
-  server <%= backend['name'] %> <%= backend['ip'] %>:80 weight <%= backend['backends'] || 10 %> maxconn <%= backend['backends'] * 3 %> check inter <%= node[:haproxy][:check_interval] %> 
-  <% end -%>
-<% end -%>
-
-<% if !node[:haproxy][:static_backends].empty? -%>  
-backend static_servers_ssl
-  mode tcp
-  balance roundrobin
-  option redispatch
-  option ssl-hello-chk
-  <% node[:haproxy][:static_backends].each do |backend| -%>
-  server <%= backend['name'] %> <%= backend['ip'] %>:443 weight <%= backend['backends'] || 10 %> maxconn <%= backend['backends'] * 3 %> check inter <%= node[:haproxy][:check_interval] %> 
-  <% end -%>
-<% end -%>
-  
 frontend http-in
   bind :80
   
@@ -253,3 +184,4 @@ frontend https-in
   <% end -%>
 
 <% end -%>  
+
